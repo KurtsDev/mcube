@@ -40,6 +40,16 @@ export default new VueRouter({
             component: Employees,
         },
         {
+            path: '/employees/add',
+            name: 'employees-add',
+            component: AddEditEmployee,
+        },
+        {
+            path: '/employees/edit/:id',
+            name: 'employees-edit',
+            component: AddEditEmployee,
+        },
+        {
             path: '*',
             name: '404',
             component: NotFound,

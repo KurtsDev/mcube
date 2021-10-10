@@ -2188,6 +2188,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     this.$store.dispatch('initEmployeesList');
@@ -2269,28 +2270,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      name: this.department.name
+      name: ''
     };
   },
   mounted: function mounted() {
-    this.$store.dispatch('editDepartment', this.$route.params.id);
+    this.editDepartment();
   },
   methods: {
+    editDepartment: function editDepartment() {
+      var _this = this;
+
+      axios.post('/api/editDepartment', {
+        id: this.$route.params.id
+      }).then(function (response) {
+        _this.name = response.data.name;
+      });
+    },
     saveDepartment: function saveDepartment() {
       this.$store.dispatch('storeDepartment', {
         id: this.$route.params.id,
         name: this.name
       });
-    }
-  },
-  computed: {
-    department: function department() {
-      return this.$store.getters.getDepartment;
     }
   }
 });
@@ -2318,7 +2321,70 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      name: '',
+      surname: '',
+      middle_name: '',
+      gender: '',
+      salary: '',
+      departmentsCheck: []
+    };
+  },
+  mounted: function mounted() {
+    this.editEmployee();
+    this.$store.dispatch('initDepartmentsList');
+  },
+  computed: {
+    departments: function departments() {
+      return this.$store.getters.getDepartments;
+    }
+  },
+  methods: {
+    addDepartment: function addDepartment(id) {
+      var department = this.departmentsCheck.indexOf(id);
+      console.log(department);
+      department === -1 ? this.departmentsCheck.push(id) : this.departmentsCheck.splice(department, 1);
+    },
+    editEmployee: function editEmployee() {
+      var _this = this;
+
+      axios.post('/api/editEmployee', {
+        id: this.$route.params.id
+      }).then(function (response) {
+        console.log(response);
+        _this.name = response.data.name;
+        _this.surname = response.data.surname;
+        _this.middle_name = response.data.middle_name;
+        _this.gender = response.data.gender;
+        _this.salary = response.data.salary;
+      });
+    },
+    saveEmployee: function saveEmployee() {
+      this.$store.dispatch('storeEmployee', {
+        id: this.$route.params.id,
+        name: this.name,
+        surname: this.surname,
+        middle_name: this.middle_name,
+        gender: this.gender,
+        salary: this.salary,
+        departments: this.departmentsCheck
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -2433,6 +2499,14 @@ vue__WEBPACK_IMPORTED_MODULE_6__["default"].use(vue_router__WEBPACK_IMPORTED_MOD
     name: 'employees',
     component: _components_Employees__WEBPACK_IMPORTED_MODULE_1__["default"]
   }, {
+    path: '/employees/add',
+    name: 'employees-add',
+    component: _components_elements_AddEditEmployee__WEBPACK_IMPORTED_MODULE_5__["default"]
+  }, {
+    path: '/employees/edit/:id',
+    name: 'employees-edit',
+    component: _components_elements_AddEditEmployee__WEBPACK_IMPORTED_MODULE_5__["default"]
+  }, {
     path: '*',
     name: '404',
     component: _components_NotFound__WEBPACK_IMPORTED_MODULE_3__["default"]
@@ -2484,15 +2558,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   actions: {
     initDepartmentsList: function initDepartmentsList(context) {
-      axios.get('api/initDepartmentsList').then(function (response) {
+      axios.get('/api/initDepartmentsList').then(function (response) {
         context.commit('initDepartmentsList', response.data);
-      });
-    },
-    editDepartment: function editDepartment(context, id) {
-      axios.post('/api/editDepartment', {
-        id: id
-      }).then(function (response) {
-        context.commit('editDepartment', response.data);
       });
     },
     storeDepartment: function storeDepartment(context, payload) {
@@ -2511,21 +2578,14 @@ __webpack_require__.r(__webpack_exports__);
   mutations: {
     initDepartmentsList: function initDepartmentsList(state, departments) {
       state.departments = departments;
-    },
-    editDepartment: function editDepartment(state, department) {
-      state.department = department;
     }
   },
   state: {
-    departments: [],
-    department: {}
+    departments: []
   },
   getters: {
     getDepartments: function getDepartments(state) {
       return state.departments;
-    },
-    getDepartment: function getDepartment(state) {
-      return state.department;
     }
   }
 });
@@ -2548,6 +2608,16 @@ __webpack_require__.r(__webpack_exports__);
     initEmployeesList: function initEmployeesList(context) {
       axios.get('api/initEmployeesList').then(function (response) {
         context.commit('initEmployeesList', response.data);
+      });
+    },
+    storeEmployee: function storeEmployee(context, payload) {
+      axios.post('/api/storeEmployee', {
+        id: payload.id,
+        name: payload.name,
+        surname: payload.surname,
+        middle_name: payload.middle_name,
+        gender: payload.gender,
+        departments: payload.departments
       });
     },
     delEmployee: function delEmployee(_ref, id) {
@@ -21125,7 +21195,7 @@ var render = function() {
     [
       _c("h1", [_vm._v("Отделы")]),
       _vm._v(" "),
-      _c("router-link", { attrs: { to: { path: "/departments/add/23" } } }, [
+      _c("router-link", { attrs: { to: { path: "/departments/add" } } }, [
         _vm._v("Добавить сотрудника")
       ]),
       _vm._v(" "),
@@ -21220,48 +21290,61 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("h1", [_vm._v("Сотрудники")]),
-    _vm._v(" "),
-    _c("table", { staticClass: "table table-striped table-bordered" }, [
-      _vm._m(0),
+  return _c(
+    "div",
+    [
+      _c("h1", [_vm._v("Сотрудники")]),
       _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.employees, function(employee) {
-          return _c(
-            "tr",
-            { key: employee.id },
-            [
-              _c("td", [_vm._v(_vm._s(employee.name))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(employee.surname))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(employee.middlename))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(employee.gender))]),
-              _vm._v(" "),
-              _c("router-link", [_vm._v("Редактировать")]),
-              _vm._v(" |\n            "),
-              _c(
-                "a",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.delEmployee(employee.id)
+      _c("router-link", { attrs: { to: { path: "/employees/add" } } }, [
+        _vm._v("Добавить отдел")
+      ]),
+      _vm._v(" "),
+      _c("table", { staticClass: "table table-striped table-bordered" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.employees, function(employee) {
+            return _c(
+              "tr",
+              { key: employee.id },
+              [
+                _c("td", [_vm._v(_vm._s(employee.name))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(employee.surname))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(employee.middle_name))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(employee.gender))]),
+                _vm._v(" "),
+                _c(
+                  "router-link",
+                  { attrs: { to: { path: "/employees/edit/" + employee.id } } },
+                  [_vm._v("Редактировать")]
+                ),
+                _vm._v(" |\n            "),
+                _c(
+                  "a",
+                  {
+                    staticClass: "router-link",
+                    on: {
+                      click: function($event) {
+                        return _vm.delEmployee(employee.id)
+                      }
                     }
-                  }
-                },
-                [_vm._v("Удалить")]
-              )
-            ],
-            1
-          )
-        }),
-        0
-      )
-    ])
-  ])
+                  },
+                  [_vm._v("Удалить")]
+                )
+              ],
+              1
+            )
+          }),
+          0
+        )
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -21396,7 +21479,7 @@ var render = function() {
     }),
     _vm._v(" "),
     _c("button", { on: { click: _vm.saveDepartment } }, [_vm._v("Сохранить")]),
-    _vm._v("\n\n    " + _vm._s(_vm.department) + "\n\n")
+    _vm._v("\n    " + _vm._s(_vm.name) + "\n")
   ])
 }
 var staticRenderFns = []
@@ -21422,112 +21505,136 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("input", {
-      directives: [
-        {
-          name: "model",
-          rawName: "v-model",
-          value: _vm.employees.name,
-          expression: "employees.name"
-        }
-      ],
-      attrs: { type: "text", placeholder: "Имя" },
-      domProps: { value: _vm.employees.name },
-      on: {
-        input: function($event) {
-          if ($event.target.composing) {
-            return
+  return _c(
+    "div",
+    [
+      _c("h1", [_vm._v("Редактирование-добавление")]),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.name,
+            expression: "name"
           }
-          _vm.$set(_vm.employees, "name", $event.target.value)
-        }
-      }
-    }),
-    _vm._v(" "),
-    _c("input", {
-      directives: [
-        {
-          name: "model",
-          rawName: "v-model",
-          value: _vm.employees.surname,
-          expression: "employees.surname"
-        }
-      ],
-      attrs: { type: "text", placeholder: "Фамилия " },
-      domProps: { value: _vm.employees.surname },
-      on: {
-        input: function($event) {
-          if ($event.target.composing) {
-            return
+        ],
+        attrs: { type: "text", placeholder: "Имя" },
+        domProps: { value: _vm.name },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.name = $event.target.value
           }
-          _vm.$set(_vm.employees, "surname", $event.target.value)
         }
-      }
-    }),
-    _vm._v(" "),
-    _c("input", {
-      directives: [
-        {
-          name: "model",
-          rawName: "v-model",
-          value: _vm.employees.middleName,
-          expression: "employees.middleName"
-        }
-      ],
-      attrs: { type: "text", placeholder: "Отчество" },
-      domProps: { value: _vm.employees.middleName },
-      on: {
-        input: function($event) {
-          if ($event.target.composing) {
-            return
+      }),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.surname,
+            expression: "surname"
           }
-          _vm.$set(_vm.employees, "middleName", $event.target.value)
-        }
-      }
-    }),
-    _vm._v(" "),
-    _c("input", {
-      directives: [
-        {
-          name: "model",
-          rawName: "v-model",
-          value: _vm.employees.gender,
-          expression: "employees.gender"
-        }
-      ],
-      attrs: { type: "text", placeholder: "Пол" },
-      domProps: { value: _vm.employees.gender },
-      on: {
-        input: function($event) {
-          if ($event.target.composing) {
-            return
+        ],
+        attrs: { type: "text", placeholder: "Фамилия " },
+        domProps: { value: _vm.surname },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.surname = $event.target.value
           }
-          _vm.$set(_vm.employees, "gender", $event.target.value)
         }
-      }
-    }),
-    _vm._v(" "),
-    _c("input", {
-      directives: [
-        {
-          name: "model",
-          rawName: "v-model",
-          value: _vm.employees.salary,
-          expression: "employees.salary"
-        }
-      ],
-      attrs: { type: "text", placeholder: "Зарплата" },
-      domProps: { value: _vm.employees.salary },
-      on: {
-        input: function($event) {
-          if ($event.target.composing) {
-            return
+      }),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.middle_name,
+            expression: "middle_name"
           }
-          _vm.$set(_vm.employees, "salary", $event.target.value)
+        ],
+        attrs: { type: "text", placeholder: "Отчество" },
+        domProps: { value: _vm.middle_name },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.middle_name = $event.target.value
+          }
         }
-      }
-    })
-  ])
+      }),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.gender,
+            expression: "gender"
+          }
+        ],
+        attrs: { type: "text", placeholder: "Пол" },
+        domProps: { value: _vm.gender },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.gender = $event.target.value
+          }
+        }
+      }),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.salary,
+            expression: "salary"
+          }
+        ],
+        attrs: { type: "text", placeholder: "Зарплата" },
+        domProps: { value: _vm.salary },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.salary = $event.target.value
+          }
+        }
+      }),
+      _vm._v(" "),
+      _vm._l(_vm.departments, function(department) {
+        return _c("div", [
+          _c("label", [
+            _c("input", {
+              attrs: { type: "checkbox" },
+              on: {
+                click: function($event) {
+                  return _vm.addDepartment(department.id)
+                }
+              }
+            }),
+            _vm._v("\n            " + _vm._s(department.name) + "\n        ")
+          ])
+        ])
+      }),
+      _vm._v(" "),
+      _c("button", { on: { click: _vm.saveEmployee } }, [_vm._v("Сохранить")])
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

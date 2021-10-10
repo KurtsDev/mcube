@@ -12,4 +12,9 @@ class Department extends Model
     public $fillable = [
         'name',
     ];
+
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class);
+    }
 }

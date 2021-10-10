@@ -16,4 +16,9 @@ class Employee extends Model
         'gender',
         'salary',
     ];
+
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class);
+    }
 }

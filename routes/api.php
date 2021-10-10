@@ -14,5 +14,7 @@ Route::post('/delDepartment', [DepartmentsController::class, 'delete']);
 
 
 Route::get('/initEmployeesList', [EmployeesController::class, 'index']);
+Route::post('/editEmployee', [EmployeesController::class, 'edit']);
+Route::post('/storeEmployee', [EmployeesController::class, 'store']);
 Route::post('/delEmployee', [EmployeesController::class, 'delete']);
 

@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Отделы</h1>
-        <router-link :to="{ path: '/departments/add/23' }">Добавить сотрудника</router-link>
+        <router-link :to="{ path: '/departments/add' }">Добавить сотрудника</router-link>
         <table class="table table-striped table-bordered">
             <thead>
             <tr>

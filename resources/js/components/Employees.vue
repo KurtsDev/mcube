@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1>Сотрудники</h1>
+        <router-link :to="{ path: '/employees/add' }">Добавить отдел</router-link>
         <table class="table table-striped table-bordered">
             <thead>
             <tr>
@@ -16,11 +17,11 @@
             <tr v-for="employee in employees" :key="employee.id">
                 <td>{{employee.name}}</td>
                 <td>{{employee.surname}}</td>
-                <td>{{employee.middlename}}</td>
+                <td>{{employee.middle_name}}</td>
                 <td>{{employee.gender}}</td>
 
-                <router-link>Редактировать</router-link> |
-                <a @click="delEmployee(employee.id)">Удалить</a>
+                <router-link :to="{ path: `/employees/edit/${employee.id}` }">Редактировать</router-link> |
+                <a class="router-link" @click="delEmployee(employee.id)">Удалить</a>
             </tr>
             </tbody>
         </table>

@@ -6,6 +6,16 @@ export default {
                     context.commit('initEmployeesList', response.data)
                 })
         },
+        storeEmployee: (context, payload) => {
+            axios.post('/api/storeEmployee', {
+                id: payload.id,
+                name: payload.name,
+                surname: payload.surname,
+                middle_name: payload.middle_name,
+                gender: payload.gender,
+                departments: payload.departments,
+            })
+        },
         delEmployee: ({commit}, id) => {
             axios.post('api/delEmployee', {id});
         },
