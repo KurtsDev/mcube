@@ -1,19 +1,18 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\EmployeesController;
+
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::get('/initDepartmentsList', [DepartmentsController::class, 'index']);
+Route::post('/editDepartment', [DepartmentsController::class, 'edit']);
+Route::post('/storeDepartment', [DepartmentsController::class, 'store']);
+Route::post('/delDepartment', [DepartmentsController::class, 'delete']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
+
+
+Route::get('/initEmployeesList', [EmployeesController::class, 'index']);
+Route::post('/delEmployee', [EmployeesController::class, 'delete']);
+
