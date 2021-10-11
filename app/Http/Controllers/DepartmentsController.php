@@ -9,7 +9,7 @@ use function MongoDB\BSON\toJSON;
 class DepartmentsController extends Controller
 {
     public function index() {
-        return Department::all();
+        return Department::query()->with('employees')->get();
     }
 
     public function edit(Request $request) {
@@ -36,6 +36,14 @@ class DepartmentsController extends Controller
     public function delete(Request $request) {
         $id = $request->id;
         $department = Department::find($id);
-        $department->delete();
+        if (!$department->employees->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Удаление невозможно - к отделу прикреплены сотрудники',
+            ]);
+        } else {
+            $department->delete();
+        }
+
     }
 }

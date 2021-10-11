@@ -3,7 +3,6 @@
         <h1>Редактирование-добавление</h1>
         <input v-model="name" type="text" placeholder="Имя">
         <button @click="saveDepartment">Сохранить</button>
-        {{name}}
     </div>
 </template>
 
@@ -30,6 +29,7 @@
                     id: this.$route.params.id,
                     name: this.name,
                 });
+                this.$router.back();
             }
         },
 

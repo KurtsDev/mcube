@@ -13,7 +13,10 @@ export default {
             })
         },
         delDepartment: ({commit}, id) => {
-            axios.post('api/delDepartment', {id});
+            axios.post('api/delDepartment', {id})
+                .then((response) => {
+                    console.log(response.data.message);
+                })
         },
 
     },

@@ -2127,8 +2127,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     this.$store.dispatch('initDepartmentsList');
@@ -2139,6 +2137,17 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    maxSalary: function maxSalary(department) {
+      var maxSalary = 0;
+      department.employees.map(function (item) {
+        console.log(item);
+
+        if (item.salary > maxSalary) {
+          maxSalary = item.salary;
+        }
+      });
+      return maxSalary;
+    },
     delDepartment: function delDepartment(id) {
       this.$store.dispatch('delDepartment', id);
       this.$store.dispatch('initDepartmentsList');
@@ -2189,6 +2198,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     this.$store.dispatch('initEmployeesList');
@@ -2199,6 +2209,13 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    departments: function departments(employee) {
+      var departmentsList = [];
+      employee.departments.map(function (item) {
+        departmentsList.push(item.name);
+      });
+      return departmentsList.join(', ');
+    },
     delEmployee: function delEmployee(id) {
       this.$store.dispatch('delEmployee', id);
       this.$store.dispatch('initEmployeesList');
@@ -2269,7 +2286,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2294,6 +2310,7 @@ __webpack_require__.r(__webpack_exports__);
         id: this.$route.params.id,
         name: this.name
       });
+      this.$router.back();
     }
   }
 });
@@ -2396,6 +2413,7 @@ __webpack_require__.r(__webpack_exports__);
         salary: this.salary,
         departments: this.departmentsCheck
       });
+      this.$router.back();
     }
   }
 });
@@ -2586,6 +2604,8 @@ __webpack_require__.r(__webpack_exports__);
       var commit = _ref.commit;
       axios.post('api/delDepartment', {
         id: id
+      }).then(function (response) {
+        console.log(response.data.message);
       });
     }
   },
@@ -2631,7 +2651,12 @@ __webpack_require__.r(__webpack_exports__);
         surname: payload.surname,
         middle_name: payload.middle_name,
         gender: payload.gender,
+        salary: payload.salary,
         departments: payload.departments
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
       });
     },
     delEmployee: function delEmployee(_ref, id) {
@@ -21210,7 +21235,7 @@ var render = function() {
       _c("h1", [_vm._v("Отделы")]),
       _vm._v(" "),
       _c("router-link", { attrs: { to: { path: "/departments/add" } } }, [
-        _vm._v("Добавить сотрудника")
+        _vm._v("Добавить отдел")
       ]),
       _vm._v(" "),
       _c("table", { staticClass: "table table-striped table-bordered" }, [
@@ -21225,11 +21250,9 @@ var render = function() {
               [
                 _c("td", [_vm._v(_vm._s(department.name))]),
                 _vm._v(" "),
-                _c("td", [_vm._v("3")]),
+                _c("td", [_vm._v(_vm._s(department.employees.length))]),
                 _vm._v(" "),
-                _c("td", [_vm._v("1200")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Прогеры")]),
+                _c("td", [_vm._v(_vm._s(_vm.maxSalary(department)))]),
                 _vm._v(" "),
                 _c(
                   "router-link",
@@ -21275,9 +21298,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Количество сотрудников")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Максимальная заработная плата")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Отделы")])
+        _c("th", [_vm._v("Максимальная заработная плата")])
       ])
     ])
   }
@@ -21310,7 +21331,7 @@ var render = function() {
       _c("h1", [_vm._v("Сотрудники")]),
       _vm._v(" "),
       _c("router-link", { attrs: { to: { path: "/employees/add" } } }, [
-        _vm._v("Добавить отдел")
+        _vm._v("Добавить сотрудника")
       ]),
       _vm._v(" "),
       _c("table", { staticClass: "table table-striped table-bordered" }, [
@@ -21330,6 +21351,10 @@ var render = function() {
                 _c("td", [_vm._v(_vm._s(employee.middle_name))]),
                 _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(employee.gender))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(employee.salary))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(_vm.departments(employee)))]),
                 _vm._v(" "),
                 _c(
                   "router-link",
@@ -21492,8 +21517,7 @@ var render = function() {
       }
     }),
     _vm._v(" "),
-    _c("button", { on: { click: _vm.saveDepartment } }, [_vm._v("Сохранить")]),
-    _vm._v("\n    " + _vm._s(_vm.name) + "\n")
+    _c("button", { on: { click: _vm.saveDepartment } }, [_vm._v("Сохранить")])
   ])
 }
 var staticRenderFns = []

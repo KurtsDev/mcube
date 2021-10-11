@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 class EmployeesController extends Controller
 {
     public function index() {
-
-        return Employee::all();
-
+        return Employee::query()->with('departments')->get();
     }
     public function edit(Request $request) {
         $employee = Employee::query()
@@ -24,6 +22,7 @@ class EmployeesController extends Controller
         $request->validate([
             'name' => 'required|max:255',
             'surname' => 'required|max:255',
+            'departments' => 'required'
         ]);
         if ($request->id) {
             $employee = Employee::find($request->id);

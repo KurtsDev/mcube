@@ -81,6 +81,7 @@ export default {
                 salary: this.salary,
                 departments: this.departmentsCheck,
             });
+            this.$router.back();
         }
     },
 

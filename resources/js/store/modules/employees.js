@@ -13,7 +13,13 @@ export default {
                 surname: payload.surname,
                 middle_name: payload.middle_name,
                 gender: payload.gender,
+                salary: payload.salary,
                 departments: payload.departments,
+            })
+                .then((response) => {
+                    console.log(response);
+                }).catch((error) => {
+                    console.log(error)
             })
         },
         delEmployee: ({commit}, id) => {

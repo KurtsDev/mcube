@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Сотрудники</h1>
-        <router-link :to="{ path: '/employees/add' }">Добавить отдел</router-link>
+        <router-link :to="{ path: '/employees/add' }">Добавить сотрудника</router-link>
         <table class="table table-striped table-bordered">
             <thead>
             <tr>
@@ -19,7 +19,8 @@
                 <td>{{employee.surname}}</td>
                 <td>{{employee.middle_name}}</td>
                 <td>{{employee.gender}}</td>
-
+                <td>{{employee.salary}}</td>
+                <td>{{departments(employee)}}</td>
                 <router-link :to="{ path: `/employees/edit/${employee.id}` }">Редактировать</router-link> |
                 <a class="router-link" @click="delEmployee(employee.id)">Удалить</a>
             </tr>
@@ -39,6 +40,13 @@
             },
         },
         methods: {
+            departments(employee) {
+                let departmentsList = [];
+                employee.departments.map((item) => {
+                    departmentsList.push(item.name);
+                })
+                return departmentsList.join(', ');
+            },
             delEmployee(id) {
                 this.$store.dispatch('delEmployee', id);
                 this.$store.dispatch('initEmployeesList');
