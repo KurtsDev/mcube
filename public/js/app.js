@@ -2332,6 +2332,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2340,7 +2344,10 @@ __webpack_require__.r(__webpack_exports__);
       middle_name: '',
       gender: '',
       salary: '',
-      departmentsCheck: []
+      //все существующие департаменты
+      departmentsCheck: [],
+      //выбранные департаменты
+      departmentsCheckEdit: []
     };
   },
   mounted: function mounted() {
@@ -2353,10 +2360,21 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    verifyCheck: function verifyCheck(id) {
+      return this.departmentsCheckEdit.includes(id);
+    },
     addDepartment: function addDepartment(id) {
-      var department = this.departmentsCheck.indexOf(id);
-      console.log(department);
-      department === -1 ? this.departmentsCheck.push(id) : this.departmentsCheck.splice(department, 1);
+      //проверяем, есть ли выбранный департамент в массиве выбранных
+      var department = this.departmentsCheckEdit.indexOf(id); // this.departmentsCheckEdit.concat(this.departmentsCheck);
+
+      console.log('id', id);
+      console.log('department', department); //если нет - пушим
+
+      if (department === -1) {
+        this.departmentsCheck.push(id);
+      } else {
+        this.departmentsCheck[department] = null;
+      }
     },
     editEmployee: function editEmployee() {
       var _this = this;
@@ -2370,6 +2388,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.middle_name = response.data.middle_name;
         _this.gender = response.data.gender;
         _this.salary = response.data.salary;
+        _this.departmentsCheckEdit = response.data.dep.map(function (item) {
+          return item.id;
+        });
       });
     },
     saveEmployee: function saveEmployee() {
@@ -21620,17 +21641,20 @@ var render = function() {
           _c("label", [
             _c("input", {
               attrs: { type: "checkbox" },
+              domProps: { checked: _vm.verifyCheck(department.id) },
               on: {
                 click: function($event) {
                   return _vm.addDepartment(department.id)
                 }
               }
             }),
-            _vm._v("\n            " + _vm._s(department.name) + "\n        ")
+            _vm._v(
+              "\n                " + _vm._s(department.name) + "\n            "
+            )
           ])
         ])
       }),
-      _vm._v(" "),
+      _vm._v("\n\n\n   " + _vm._s(this.departmentsCheckEdit) + "\n\n    "),
       _c("button", { on: { click: _vm.saveEmployee } }, [_vm._v("Сохранить")])
     ],
     2

@@ -13,9 +13,11 @@ class EmployeesController extends Controller
 
     }
     public function edit(Request $request) {
-        return Employee::query()
+        $employee = Employee::query()
             ->where('id', $request->id)
             ->first();
+        $employee->dep = $employee->departments;
+        return $employee;
     }
 
     public function store(Request $request) {
@@ -26,11 +28,11 @@ class EmployeesController extends Controller
         if ($request->id) {
             $employee = Employee::find($request->id);
             $employee->update($request->all());
-            $employee->departments()->attach($request->departments);
+            $employee->departments()->sync($request->departments);
         } else {
             $employee = new Employee($request->all());
             $employee->save();
-            $employee->departments()->attach($request->departments);
+            $employee->departments()->sync($request->departments);
         }
 
     }

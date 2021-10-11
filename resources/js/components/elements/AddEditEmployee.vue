@@ -6,14 +6,18 @@
         <input v-model="middle_name" type="text" placeholder="Отчество">
         <input v-model="gender" type="text" placeholder="Пол">
         <input v-model="salary" type="text" placeholder="Зарплата">
-        <div v-for="department in departments">
-            <label>
-                <input type="checkbox" @click="addDepartment(department.id)">
-                {{department.name}}
-            </label>
 
+        <div v-for="department in departments">
+
+                <label>
+                    <input type="checkbox" :checked="verifyCheck(department.id)" @click="addDepartment(department.id)">
+                    {{department.name}}
+                </label>
 
         </div>
+
+
+       {{this.departmentsCheckEdit}}
 
         <button @click="saveEmployee">Сохранить</button>
     </div>
@@ -28,7 +32,10 @@ export default {
             middle_name: '',
             gender: '',
             salary: '',
+            //все существующие департаменты
             departmentsCheck: [],
+            //выбранные департаменты
+            departmentsCheckEdit: [],
         }
     },
     mounted() {
@@ -41,11 +48,21 @@ export default {
         },
     },
     methods: {
+        verifyCheck(id) {
+            return this.departmentsCheckEdit.includes(id);
+        },
         addDepartment(id) {
-            let department = this.departmentsCheck.indexOf(id);
-            console.log(department);
-            (department === -1) ? this.departmentsCheck.push(id) : this.departmentsCheck.splice(department, 1);
-
+            //проверяем, есть ли выбранный департамент в массиве выбранных
+            let department = this.departmentsCheckEdit.indexOf(id);
+            // this.departmentsCheckEdit.concat(this.departmentsCheck);
+            console.log('id', id)
+            console.log('department', department);
+            //если нет - пушим
+            if (department === -1) {
+                this.departmentsCheck.push(id)
+            } else {
+                this.departmentsCheck[department] = null;
+            }
         },
         editEmployee() {
             axios.post('/api/editEmployee', {
@@ -57,6 +74,9 @@ export default {
                 this.middle_name = response.data.middle_name
                 this.gender = response.data.gender
                 this.salary = response.data.salary
+                this.departmentsCheckEdit = response.data.dep.map((item) => {
+                    return item.id;
+                })
             });
         },
         saveEmployee() {
