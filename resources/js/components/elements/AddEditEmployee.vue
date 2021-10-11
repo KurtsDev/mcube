@@ -17,7 +17,7 @@
         </div>
 
 
-       {{this.departmentsCheckEdit}}
+       {{this.departmentsCheck}}
 
         <button @click="saveEmployee">Сохранить</button>
     </div>
@@ -32,10 +32,7 @@ export default {
             middle_name: '',
             gender: '',
             salary: '',
-            //все существующие департаменты
             departmentsCheck: [],
-            //выбранные департаменты
-            departmentsCheckEdit: [],
         }
     },
     mounted() {
@@ -49,19 +46,14 @@ export default {
     },
     methods: {
         verifyCheck(id) {
-            return this.departmentsCheckEdit.includes(id);
+            return this.departmentsCheck.includes(id);
         },
         addDepartment(id) {
-            //проверяем, есть ли выбранный департамент в массиве выбранных
-            let department = this.departmentsCheckEdit.indexOf(id);
-            // this.departmentsCheckEdit.concat(this.departmentsCheck);
-            console.log('id', id)
-            console.log('department', department);
-            //если нет - пушим
+            let department = this.departmentsCheck.indexOf(id);
             if (department === -1) {
                 this.departmentsCheck.push(id)
             } else {
-                this.departmentsCheck[department] = null;
+                this.departmentsCheck.splice(department, 1);
             }
         },
         editEmployee() {
@@ -74,7 +66,7 @@ export default {
                 this.middle_name = response.data.middle_name
                 this.gender = response.data.gender
                 this.salary = response.data.salary
-                this.departmentsCheckEdit = response.data.dep.map((item) => {
+                this.departmentsCheck = response.data.dep.map((item) => {
                     return item.id;
                 })
             });

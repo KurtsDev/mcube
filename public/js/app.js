@@ -2344,10 +2344,7 @@ __webpack_require__.r(__webpack_exports__);
       middle_name: '',
       gender: '',
       salary: '',
-      //все существующие департаменты
-      departmentsCheck: [],
-      //выбранные департаменты
-      departmentsCheckEdit: []
+      departmentsCheck: []
     };
   },
   mounted: function mounted() {
@@ -2361,19 +2358,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     verifyCheck: function verifyCheck(id) {
-      return this.departmentsCheckEdit.includes(id);
+      return this.departmentsCheck.includes(id);
     },
     addDepartment: function addDepartment(id) {
-      //проверяем, есть ли выбранный департамент в массиве выбранных
-      var department = this.departmentsCheckEdit.indexOf(id); // this.departmentsCheckEdit.concat(this.departmentsCheck);
-
-      console.log('id', id);
-      console.log('department', department); //если нет - пушим
+      var department = this.departmentsCheck.indexOf(id);
 
       if (department === -1) {
         this.departmentsCheck.push(id);
       } else {
-        this.departmentsCheck[department] = null;
+        this.departmentsCheck.splice(department, 1);
       }
     },
     editEmployee: function editEmployee() {
@@ -2388,7 +2381,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.middle_name = response.data.middle_name;
         _this.gender = response.data.gender;
         _this.salary = response.data.salary;
-        _this.departmentsCheckEdit = response.data.dep.map(function (item) {
+        _this.departmentsCheck = response.data.dep.map(function (item) {
           return item.id;
         });
       });
@@ -21654,7 +21647,7 @@ var render = function() {
           ])
         ])
       }),
-      _vm._v("\n\n\n   " + _vm._s(this.departmentsCheckEdit) + "\n\n    "),
+      _vm._v("\n\n\n   " + _vm._s(this.departmentsCheck) + "\n\n    "),
       _c("button", { on: { click: _vm.saveEmployee } }, [_vm._v("Сохранить")])
     ],
     2
