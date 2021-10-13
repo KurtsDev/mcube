@@ -6,7 +6,7 @@ composer install
 
 npm install
 
-поправить env на свою бд, или создать базу mediacube
+поправить env на свою бд, или создать базу mcube
 
 php artisan migrate
 
